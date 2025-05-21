@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class AT001_Undangan {
-    
+
     static Scanner scanner = new Scanner(System.in);
     static Random random = new Random();
 
     // Player stats
     static class Player {
+
         int maxHP = 1200;
         int hp = 1200;
         int atk = 150;
@@ -26,7 +27,9 @@ public class AT001_Undangan {
 
         // Calculate attack damage including Jingu Mastery
         int attackDamage() {
-            if (!alive) return 0;
+            if (!alive) {
+                return 0;
+            }
             int damage = atk;
             jinguCountervar += 1;
             jingustackduration.push(jinguCountervar);
@@ -47,10 +50,12 @@ public class AT001_Undangan {
 
         // Calculate counter damage scaled on DEF with enhancement when hp <= 50%
         int counterDamage() {
-            if (!alive) return 0;
+            if (!alive) {
+                return 0;
+            }
             int baseDamage = def * 2;
             if (hp <= maxHP / 2) {
-                baseDamage = (int)(baseDamage * 1.6);
+                baseDamage = (int) (baseDamage * 1.6);
             }
             // Include Jingu Mastery bonus if active
             if (jinguActive) {
@@ -60,15 +65,21 @@ public class AT001_Undangan {
         }
 
         void heal(int amount) {
-            if (!alive) return;
+            if (!alive) {
+                return;
+            }
             hp = Math.min(hp + amount, maxHP);
             System.out.println("Player heals " + amount + " HP from Jingu Mastery lifesteal.");
         }
 
         void takeDamage(int damage) {
-            if (!alive) return;
+            if (!alive) {
+                return;
+            }
             hp -= damage;
-            if (hp < 0) hp = 0;
+            if (hp < 0) {
+                hp = 0;
+            }
             System.out.println("Player takes " + damage + " damage.");
             if (hp == 0) {
                 alive = false;
@@ -79,6 +90,7 @@ public class AT001_Undangan {
 
     // Enemy stats
     static class Enemy {
+
         int maxHP = 1200;
         int hp = 1200;
         Stack<Integer> hpStack = new Stack<>();
@@ -93,7 +105,7 @@ public class AT001_Undangan {
         }
 
         int getPoisonStacks() {
-            return (int)statuses.get("poisonStacks");
+            return (int) statuses.get("poisonStacks");
         }
 
         void setPoisonStacks(int val) {
@@ -101,7 +113,7 @@ public class AT001_Undangan {
         }
 
         long getPoisonEndTime() {
-            return (long)statuses.get("poisonEndTime");
+            return (long) statuses.get("poisonEndTime");
         }
 
         void setPoisonEndTime(long time) {
@@ -114,11 +126,15 @@ public class AT001_Undangan {
         }
 
         void takeDamage(int damage) {
-            if (!alive) return;
+            if (!alive) {
+                return;
+            }
 
             if (isPoisonActive()) {
                 int newHp = hp + damage;
-                if (newHp > maxHP) newHp = maxHP;
+                if (newHp > maxHP) {
+                    newHp = maxHP;
+                }
                 boolean reverted = updateHpStack(newHp);
                 if (!reverted) {
                     hp = newHp;
@@ -126,7 +142,9 @@ public class AT001_Undangan {
                 }
             } else {
                 int newHp = hp - damage;
-                if (newHp < 0) newHp = 0;
+                if (newHp < 0) {
+                    newHp = 0;
+                }
                 boolean reverted = updateHpStack(newHp);
                 if (!reverted) {
                     hp = newHp;
@@ -166,13 +184,19 @@ public class AT001_Undangan {
         }
 
         void attack(Player player) {
-            if (!alive) return;
+            if (!alive) {
+                return;
+            }
             int baseDamage = 140;
-            int variance = random.nextInt(21) - 10; 
+            int variance = random.nextInt(21) - 10;
             int damage = baseDamage + variance;
-            if (damage < 0) damage = 0;
+            if (damage < 0) {
+                damage = 0;
+            }
             int damageToPlayer = damage - (player.def / 2);
-            if (damageToPlayer < 0) damageToPlayer = 0;
+            if (damageToPlayer < 0) {
+                damageToPlayer = 0;
+            }
             System.out.println("Enemy attacks and deals " + damageToPlayer + " damage to Player.");
             player.takeDamage(damageToPlayer);
         }
@@ -180,6 +204,7 @@ public class AT001_Undangan {
 
     // Linked list Node to store monster names
     static class Node {
+
         String firstName;
         String lastName;
         Node next;
@@ -193,24 +218,33 @@ public class AT001_Undangan {
 
     // Linked list to store and generate random monster names
     static class MonsterNameList {
+
         private Node head;
         private Random random;
 
         private String[] firstNames = {
             "Grog", "Zar", "Thorn", "Blitz", "Fang", "Rok", "Skull", "Vex", "Krull", "Zog",
-            "Morg", "Justine", "Ninmar", "Mark", "Joshua",
+            "Morg", "Justine", "Ninmar", "Mark", "Joshua", "Bjarni", "Kerr", "Torkel", "Trond", 
+            "Snorri", "Hugleikr", "Vidar", "Arnfinn", "Trygve", "Torvald", "Torgeir", "Odin",
+            "Brynjar", "Oscar", "Magni", "Þorir", "Frode", "Rollo", "Gandalf", "Kjellfrid", "Helga",
+            "Torny", "Idonea", "Þorvi", "Skad", "Asdis", "Sigrun", "Dagmar", "Brenda", "Bergljot", "Gunvor",
+            "Asdis", "Selby", "Solveig"
         };
 
         private String[] lastNames = {
             "the Terrible", "the Fearsome", "the Mighty", "the Cunning", "the Ruthless",
             "Agustin", "Rosales", "Manuel", "Alcantara", "the Malevolent",
-            "Ocampo", "Ampi", "Olpenado", "Palencia", "Reponoya"
+            "Ocampo", "Ampi", "Olpenado", "Palencia", "Fallenshine", "Stonepunch", "Dayspire", "Reponoya",
+            "Bessac", "Châtize", "Belessard", "Chavalle", "Machesseau", "Moltendancer", "Summerforce", "Steelsoar",
+            "Chamimond", "Andimtal", "Alistel", "Boberel", "Casteveron", "Jouveffet", "Béchavilliers", "Albirdieu",
+            "Castemeur", "Mévouimpes", "Pellechanteau", "Bougaignac", "Duraffet", "Jouvestel", "Astassier",
+            "Aboleilles", "Veges", "Ronchegnory", "Limofort", "Sarrassac", "Gaiseul", "Saintidras", "Polillot"
         };
 
         public MonsterNameList() {
             this.head = null;
             this.random = new Random();
-            generateRandomNames(25);
+            generateRandomNames(50);
         }
 
         private void generateRandomNames(int count) {
@@ -308,15 +342,19 @@ public class AT001_Undangan {
                 }
 
                 System.out.printf("Player HP: %d/%d | Enemy HP: %d/%d\n", player.hp, player.maxHP, enemy.hp, enemy.maxHP);
-                if (!enemy.alive) break;
+                if (!enemy.alive) {
+                    break;
+                }
 
                 playerTurn = false;
-            } else {
+            } else { 
                 System.out.println("\nEnemy's turn...");
                 enemy.attack(player);
 
                 System.out.printf("Player HP: %d/%d | Enemy HP: %d/%d\n", player.hp, player.maxHP, enemy.hp, enemy.maxHP);
-                if (!player.alive) break;
+                if (!player.alive) {
+                    break;
+                }
 
                 playerTurn = true;
             }
@@ -330,4 +368,3 @@ public class AT001_Undangan {
         }
     }
 }
-
